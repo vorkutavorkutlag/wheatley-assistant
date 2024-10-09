@@ -1,5 +1,8 @@
 import json
 import os
+import time
+
+import selenium.common.exceptions
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
@@ -8,23 +11,33 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 ROOT_DIR: str = os.path.abspath(os.path.dirname(__file__))  # Absolute root directory path
-DEFAULT_WAIT_TIME: int = 5   # Wait time in seconds
+DEFAULT_WAIT_TIME: int = 15   # Default Wait time in seconds for WebBrowserWait
+QUICK_WAIT_TIME: int = 2      # Quick wait time in seconds for time.sleep
+DESIRED_VOICE = 3             # Best fitted voice for Wheatley
 
 
 class Cai:
-    def __init__(self, char_name: str = 'Wheatley') -> None:
-        # Set name
+    def __init__(self, char_name: str = 'Wheatley', my_name: str = "The User"):
+        # Set name and prompt message
+        self.my_name = my_name
         self.character_name: str = char_name
+        self.prompt_message: str = f"[Context: You, {self.character_name}, are able to communicate with me on my " \
+                                   "computer, as if you were uploaded here. You are like a desktop companion on my," \
+                                   f" {self.my_name}'s computer. Your purposes: " \
+                                   f"help me with information, keep me company, and complete my commands. " \
+                                    "The following is a list of available commands that can be completed whenever " \
+                                    "the user asks for it: {CURRENTLY EMPTY}... " \
+                                   "Keep true to your personality in Portal 2, do not afraid to be rude.]        Hello!"
 
         # Initialize driver
-        options = self.get_options(visible=False)
+        options = self.get_options(visible=True)
         self.driver: webdriver.Firefox = webdriver.Firefox(options)
 
         # Initialize directories if not exist
         cookie_cache_path: str = os.path.join(ROOT_DIR, 'config', 'driver_cookies.json')
-        cookies_folder_path: str = os.path.join(ROOT_DIR, "config")
+        config_folder_path: str = os.path.join(ROOT_DIR, "config")
 
-        os.makedirs(cookies_folder_path, exist_ok=True)
+        os.makedirs(config_folder_path, exist_ok=True)
 
         if not os.path.exists(cookie_cache_path):
             with open(cookie_cache_path, 'w') as file:
@@ -117,6 +130,7 @@ class Cai:
                 """
         text_area: EC.element_to_be_clickable = WebDriverWait(self.driver, wait_time).until(
             EC.element_to_be_clickable((By.XPATH, xpath)))
+
         text_area.send_keys(text)
         text_area.send_keys(Keys.ENTER)
 
@@ -132,38 +146,78 @@ class Cai:
 
     def initialize_chat(self) -> None:
         """
-        Writes a detailed prompt for the bot to follow in the future and sends it.
+        Finds the textarea and sends the prompt message.
         :return: None.
         """
-        initializer_message: str = "[WHATEVER IS IN BRACKETS IS OUTSIDE OF ROLEPLAY] [Context: You are a sentient " \
-                                   "desktop companion on my, the user's, computer. Your purpose is to help me with " \
-                                   "information, keep me company, and complete my commands. The following is a list " \
-                                   "of available commands that can be completed whenever the user asks for it: " \
-                                   "{CURRENTLY EMPTY}. For your first message, say 'BOOTING UP'.]"
-        text_area_xpath: str = f"//textarea[@placeholder='Message {self.character_name}...']"
-        self.write_by_xpath(text_area_xpath, initializer_message)
+        text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/div/div[1]/textarea"
+        self.write_by_xpath(text_area_xpath, self.prompt_message)
 
+    def get_new_chat(self) -> None:
+        """
+        Opens options, locates new chat button, clicks. Website automatically changes into new chat
+        :return: None
+        """
+        triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[1]/div[2]/div/button"
+        new_chat_button_xpath: str = "/html/body/div[3]/div[4]/button[1]"
+        self.click_by_xpath(triple_dot_xpath)
+        self.click_by_xpath(new_chat_button_xpath)
+
+    def switch_voice(self, voice_num: int) -> None:
+        """
+        Opens options, locates voice button and selects new voice
+        :param voice_num:
+        :return:
+        """
+        if voice_num == 1:
+            return
+
+        triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[1]/div[2]/div/button"
+        voice_button_xpath: str = "/html/body/div[3]/div[4]/div[1]/button"
+        desired_voice_xpath: str = f"/html/body/div[4]/div[3]/div[2]/div[{voice_num}]/button[2]"
+        try:
+            self.click_by_xpath(triple_dot_xpath)
+            self.click_by_xpath(voice_button_xpath)
+            self.click_by_xpath(desired_voice_xpath)
+        except selenium.common.exceptions.TimeoutException:
+            # Press escape to close the pop-up
+            webdriver.ActionChains(self.driver).send_keys(Keys.ESCAPE).perform()
+            time.sleep(QUICK_WAIT_TIME)
+
+
+    def interrupt(self) -> None:
+        """
+        Can only be used while in a call, otherwise will throw an error. Clicks the interrupt button.
+        :return:
+        """
+        interrupt_button_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div[2]/div/div[2]/button"
+        self.click_by_xpath(interrupt_button_xpath)
 
     def run(self):
         cai_website: str = "https://character.ai/"
-        cai_wheatley: str = "https://character.ai/chat/l7714PjXVoRSsP6l2WYIPHkLKX3KQVbdA6ulZ5oS__M"
-        call_xpath: str = "//button[@data-state='closed' and not(contains(@aria-haspopup, 'dialog')) and contains(" \
-                          "@class, 'inline-flex') and not(contains(., 'Create'))] "
+        cai_character: str = "https://character.ai/chat/l7714PjXVoRSsP6l2WYIPHkLKX3KQVbdA6ulZ5oS__M"
+        call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/button"
 
 
-        # Load cookies and reload into Wheatley's chat
+        # Load cookies and reload into character's chat
         self.driver.get(cai_website)
         self.load_cookies()
-        self.driver.get(cai_wheatley)
+        self.driver.get(cai_character)
 
         if self.is_first_run():
+            # Ensures the website loads properly before writing
+            time.sleep(QUICK_WAIT_TIME)
+            self.get_new_chat()
+            time.sleep(QUICK_WAIT_TIME)
             self.initialize_chat()
+            time.sleep(QUICK_WAIT_TIME)
+            self.switch_voice(DESIRED_VOICE)
             # Create empty BIRTH file, indicating program ran at least once.
             open(os.path.join(ROOT_DIR, "config", "BIRTH"), 'a').close()
-            self.driver.get(cai_wheatley)  # For whatever reason kicks you out of the chat. No problem, we get back in
 
+        # Click call button
         self.click_by_xpath(xpath=call_xpath)
-
+        input("Press enter to interrupt")
+        self.interrupt()
 
 
 
