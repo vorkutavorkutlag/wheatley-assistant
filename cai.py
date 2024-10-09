@@ -26,11 +26,11 @@ class Cai:
                                    f" {self.my_name}'s computer. Your purposes: " \
                                    f"help me with information, keep me company, and complete my commands. " \
                                     "The following is a list of available commands that can be completed whenever " \
-                                    "the user asks for it: {CURRENTLY EMPTY}... " \
+                                    "the user asks for it: {Play music, }... " \
                                    "Keep true to your personality in Portal 2, do not afraid to be rude.]        Hello!"
 
         # Initialize driver
-        options = self.get_options(visible=True)
+        options = self.get_options(visible=False)
         self.driver: webdriver.Firefox = webdriver.Firefox(options)
 
         # Initialize directories if not exist
@@ -123,6 +123,7 @@ class Cai:
 
     def write_by_xpath(self, xpath: str, text: str, wait_time: int = DEFAULT_WAIT_TIME) -> None:
         """
+                Finds element by xpath, writes, presses enter.
                 :param wait_time: How much time we want to wait before clicking
                 :param xpath: xpath to the element we want to be clicked
                 :param text: the text we want entered and sent in the textarea
@@ -192,6 +193,16 @@ class Cai:
         interrupt_button_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div[2]/div/div[2]/button"
         self.click_by_xpath(interrupt_button_xpath)
 
+    def is_making_sound(self) -> bool:
+        """
+        :return: True if webdriver is making audio, false otherwise
+        """
+        # javascript code that returns if audio is playing
+        script: str = "return Array.from(document.querySelectorAll('audio, video')).some("\
+            "media => !media.paused && !media.muted && media.readyState >= 2);"
+        is_audio_playing = self.driver.execute_script(script)
+        return is_audio_playing
+
     def run(self):
         cai_website: str = "https://character.ai/"
         cai_character: str = "https://character.ai/chat/l7714PjXVoRSsP6l2WYIPHkLKX3KQVbdA6ulZ5oS__M"
@@ -202,10 +213,10 @@ class Cai:
         self.driver.get(cai_website)
         self.load_cookies()
         self.driver.get(cai_character)
+        # Ensures the website loads properly before writing
+        time.sleep(QUICK_WAIT_TIME)
 
         if self.is_first_run():
-            # Ensures the website loads properly before writing
-            time.sleep(QUICK_WAIT_TIME)
             self.get_new_chat()
             time.sleep(QUICK_WAIT_TIME)
             self.initialize_chat()
@@ -216,11 +227,6 @@ class Cai:
 
         # Click call button
         self.click_by_xpath(xpath=call_xpath)
-        input("Press enter to interrupt")
-        self.interrupt()
-
-
-
 
 
 if __name__ == "__main__":
