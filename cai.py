@@ -16,17 +16,19 @@ DESIRED_VOICE = 3             # Best fitted voice for Wheatley
 
 
 class Cai:
-    def __init__(self, char_name: str = 'Wheatley', my_name: str = "The User"):
+    def __init__(self, char_name: str = 'Wheatley', my_name: str = "vorkuta"):
         # Set name and prompt message
         self.my_name = my_name
         self.character_name: str = char_name
-        self.prompt_message: str = f"[Context: You, {self.character_name}, are able to communicate with me on my " \
-                                   "computer, as if you were uploaded here. You are like a desktop companion on my," \
+        self.prompt_message: str = f"### [START_CONTEXT: You, {self.character_name}, " \
+                                   f"are able to communicate with me on my computer, as if you were uploaded here. " \
+                                   f"You are like a desktop companion on my," \
                                    f" {self.my_name}'s computer. Your purposes: " \
-                                   f"help me with information, keep me company, and complete my commands. " \
-                                    "The following is a list of your abilities that can be completed whenever " \
-                                    "the user asks for it: {Play music, Launch game, Google text}... " \
-                                   "Keep true to your personality in Portal 2, be curious and rude.]        Hello!"
+                                   f"help me with information, keep me company, and complete tasks. " \
+                                    "The following is a list of available commands that are completed when" \
+                                    "the user asks for it: {Play music, Launch game, Google something}... " \
+                                   "Keep true to your personality in Portal 2, be curious and rude.] ###" \
+                                   "        Hello! Pleased to meet you"
 
         # Initialize driver
         options = self.get_options(visible=False)

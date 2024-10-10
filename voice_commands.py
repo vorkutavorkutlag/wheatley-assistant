@@ -1,6 +1,8 @@
+import threading
+
+import selenium.common.exceptions
 from RealtimeSTT import AudioToTextRecorder   # Thanks, KoljaB!
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -44,35 +46,55 @@ class commandhandler:
             try:
                 self.cai_reference.driver.quit()
                 os._exit(0)
-            except BrokenPipeError:
+            except (BrokenPipeError, ):
                 return
 
-    @staticmethod
-    def play_music() -> None:
-        """
-        Randomly chooses a song/audio to play from the music folder
-        :return: None
-        """
-        # In case something is already playing, stop it and choose another
-        if mixer.Channel(0).get_busy():
-            mixer.stop()
-        path_to_music_folder: str = os.path.join(ROOT_DIR, "music")
-        audio_file: str = random.choice(os.listdir(path_to_music_folder))
-        audio_file_path: str = os.path.join(ROOT_DIR, "music", audio_file)
-        mixer.music.load(audio_file_path)
-        mixer.music.play()
-        return
+    # @staticmethod
+    # def play_music() -> None:
+    #     """
+    #     Randomly chooses a song/audio to play from the music folder
+    #     :return: None
+    #     """
+    #     # In case something is already playing, stop it and choose another
+    #     if mixer.Channel(0).get_busy():
+    #         mixer.stop()
+    #     path_to_music_folder: str = os.path.join(ROOT_DIR, "music")
+    #     audio_file: str = random.choice(os.listdir(path_to_music_folder))
+    #     audio_file_path: str = os.path.join(ROOT_DIR, "music", audio_file)
+    #     mixer.music.load(audio_file_path)
+    #     mixer.music.play()
+    #     return
+    #
+    # @staticmethod
+    # def pause_music() -> None:
+    #     """
+    #     Stops whatever song/audio is playing
+    #     :return: None
+    #     """
+    #     mixer.music.pause()
+    def init_webdriver(self):
+        extensions_path: str = os.path.join(ROOT_DIR, "extensions")
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['--headless'])
+        for extension in os.listdir(extensions_path):
+            extension_abspath: str = os.path.join(extensions_path, extension)
+            options.add_extension(extension_abspath)
+
+        self.driver = webdriver.Chrome(chrome_options=options)
+
+    def on_youtube_play(self, text_args: str):
+        if self.driver is None:
+            self.init_webdriver()
+
+        search_query: str = 'https://www.youtube.com/results?search_query={}'.format(text_args)
+        self.driver.get(search_query)
+
+        WebDriverWait(self.driver, QUICK_WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "video-title")))
+        self.driver.find_element(By.ID, "video-title").click()
+
 
     @staticmethod
-    def pause_music() -> None:
-        """
-        Stops whatever song/audio is playing
-        :return: None
-        """
-        mixer.music.pause()
-
-    @staticmethod
-    def lets_play_a_game() -> None:
+    def lets_play_a_random_game() -> None:
         """
         Made for Windows, randomly launches a game from steam.
         :return: None
@@ -106,7 +128,11 @@ class commandhandler:
         See cai.py for docs on interrupt function
         :return: None
         """
-        self.cai_reference.interrupt()
+        try:
+            self.cai_reference.interrupt()
+        except selenium.common.exceptions.TimeoutException:
+            # Meaning it did not find the interruption button - meaning character was not speaking
+            return
 
     def kill_google(self) -> None:
         """
@@ -119,14 +145,15 @@ class commandhandler:
         except AttributeError:
             return
 
-    def search_google(self, text_args: str) -> None:
+    def please_google(self, text_args: str) -> None:
         """
         Uses selenium to open google and search text.
         :param text_args:
         :return:
         """
-        chrome_options = Options()
-        self.driver = webdriver.Chrome(chrome_options=chrome_options)
+        if self.driver is None:
+            self.init_webdriver()
+
         self.driver.get("https://www.google.com")
         text_area: EC.element_to_be_clickable = WebDriverWait(self.driver, QUICK_WAIT_TIME).until(
             EC.element_to_be_clickable((By.NAME, 'q')))
@@ -144,6 +171,7 @@ class commandhandler:
         # Filter text
         text = text.lower()
         text = text.replace("'", "")
+        text = text.replace(",", "")
         for func_name in self.commands.keys():
             if func_name in text:
                 try:

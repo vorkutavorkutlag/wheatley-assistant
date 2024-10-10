@@ -20,16 +20,20 @@ def main():
     web_manager: cai.Cai = cai.Cai()
     voice_command_manager: voice_commands.commandhandler = voice_commands.commandhandler(web_manager)
 
-    cai_proc: Thread = Thread(target=web_manager.run)
-    vc_proc: Thread = Thread(target=voice_command_manager.run)
-    procs: list[Thread] = [cai_proc, vc_proc]
-    for proc in procs:
-        proc.start()
+    cai_thread: Thread = Thread(target=web_manager.run)
+    vc_thread: Thread = Thread(target=voice_command_manager.run)
+    threads: list[Thread] = [cai_thread, vc_thread]
+    for thread in threads:
+        thread.start()
 
-    turn_volume_down()
+    try:
+        turn_volume_down()
+    except:
+        # Most likely because user uses Linux
+        pass
 
-    for proc in procs:
-        proc.join()
+    for thread in threads:
+        thread.join()
 
 
 
