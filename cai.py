@@ -1,7 +1,6 @@
 import json
 import os
 import time
-
 import selenium.common.exceptions
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -12,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 ROOT_DIR: str = os.path.abspath(os.path.dirname(__file__))  # Absolute root directory path
 DEFAULT_WAIT_TIME: int = 15   # Default Wait time in seconds for WebBrowserWait
-QUICK_WAIT_TIME: int = 2      # Quick wait time in seconds for time.sleep
+QUICK_WAIT_TIME: int = 2      # Quick wait time in seconds
 DESIRED_VOICE = 3             # Best fitted voice for Wheatley
 
 
@@ -25,9 +24,9 @@ class Cai:
                                    "computer, as if you were uploaded here. You are like a desktop companion on my," \
                                    f" {self.my_name}'s computer. Your purposes: " \
                                    f"help me with information, keep me company, and complete my commands. " \
-                                    "The following is a list of available commands that can be completed whenever " \
-                                    "the user asks for it: {Play music, }... " \
-                                   "Keep true to your personality in Portal 2, do not afraid to be rude.]        Hello!"
+                                    "The following is a list of your abilities that can be completed whenever " \
+                                    "the user asks for it: {Play music, Launch game, Google text}... " \
+                                   "Keep true to your personality in Portal 2, be curious and rude.]        Hello!"
 
         # Initialize driver
         options = self.get_options(visible=False)
@@ -111,6 +110,7 @@ class Cai:
         """
         return not os.path.exists(os.path.join(ROOT_DIR, "config", "BIRTH"))
 
+
     def click_by_xpath(self, xpath: str, wait_time: int = DEFAULT_WAIT_TIME) -> None:
         """
         :param wait_time: How much time we want to wait before clicking
@@ -151,7 +151,11 @@ class Cai:
         :return: None.
         """
         text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/div/div[1]/textarea"
-        self.write_by_xpath(text_area_xpath, self.prompt_message)
+        try:
+            self.write_by_xpath(text_area_xpath, self.prompt_message, wait_time=QUICK_WAIT_TIME)
+        except selenium.common.exceptions.TimeoutException:
+            text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[3]/div/div/div/div[1]/textarea"
+            self.write_by_xpath(text_area_xpath, self.prompt_message, wait_time=QUICK_WAIT_TIME)
 
     def get_new_chat(self) -> None:
         """
@@ -160,7 +164,11 @@ class Cai:
         """
         triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[1]/div[2]/div/button"
         new_chat_button_xpath: str = "/html/body/div[3]/div[4]/button[1]"
-        self.click_by_xpath(triple_dot_xpath)
+        try:
+            self.click_by_xpath(triple_dot_xpath, wait_time=QUICK_WAIT_TIME)
+        except selenium.common.exceptions.TimeoutException:
+            triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[1]/div[2]/div/button"
+            self.click_by_xpath(triple_dot_xpath, wait_time=QUICK_WAIT_TIME)
         self.click_by_xpath(new_chat_button_xpath)
 
     def switch_voice(self, voice_num: int) -> None:
@@ -226,7 +234,11 @@ class Cai:
             open(os.path.join(ROOT_DIR, "config", "BIRTH"), 'a').close()
 
         # Click call button
-        self.click_by_xpath(xpath=call_xpath)
+        try:
+            self.click_by_xpath(xpath=call_xpath, wait_time=QUICK_WAIT_TIME)
+        except selenium.common.exceptions.TimeoutException:
+            call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[3]/div/div/button"
+            self.click_by_xpath(xpath=call_xpath, wait_time=QUICK_WAIT_TIME)
 
 
 if __name__ == "__main__":

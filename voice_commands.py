@@ -1,12 +1,18 @@
 from RealtimeSTT import AudioToTextRecorder   # Thanks, KoljaB!
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from pygame import mixer
-import sys
 import os
 import random
 from cai import Cai
 
 ROOT_DIR: str = os.path.abspath(os.path.dirname(__file__))
+QUICK_WAIT_TIME: int = 2      # Quick wait time in seconds
 
 
 class commandhandler:
@@ -27,15 +33,19 @@ class commandhandler:
             spaced_attr: str = attr.replace("_", " ")
             self.commands[spaced_attr] = getattr(self, attr)
 
-    @staticmethod
-    def kill_program(driver: webdriver.Firefox) -> None:
+    def kill_application(self) -> None:
         """
-        Closes webdriver (CAI connection) and shuts program down
-        :param driver: Reference to the webdriver connected to CAI
+        Closes webdriver (CAI connection), driver, and shuts program down
         :return: None
         """
-        driver.quit()
-        sys.exit()
+        try:
+            self.kill_google()
+        finally:
+            try:
+                self.cai_reference.driver.quit()
+                os._exit(0)
+            except BrokenPipeError:
+                return
 
     @staticmethod
     def play_music() -> None:
@@ -98,17 +108,6 @@ class commandhandler:
         """
         self.cai_reference.interrupt()
 
-    def google(self, text_args: str) -> None:
-        """
-        Uses selenium to open google and search text. Uses cai.py's write_by_xpath function.
-        :param text_args:
-        :return:
-        """
-        search_textarea_xpath: str = "/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[2]/textarea"
-        self.driver = webdriver.Chrome()
-        self.driver.get("https://www.google.com")
-        self.cai_reference.write_by_xpath(search_textarea_xpath, text_args)
-
     def kill_google(self) -> None:
         """
         Closes the temporary webdriver
@@ -119,6 +118,21 @@ class commandhandler:
             self.driver = None
         except AttributeError:
             return
+
+    def search_google(self, text_args: str) -> None:
+        """
+        Uses selenium to open google and search text.
+        :param text_args:
+        :return:
+        """
+        chrome_options = Options()
+        self.driver = webdriver.Chrome(chrome_options=chrome_options)
+        self.driver.get("https://www.google.com")
+        text_area: EC.element_to_be_clickable = WebDriverWait(self.driver, QUICK_WAIT_TIME).until(
+            EC.element_to_be_clickable((By.NAME, 'q')))
+
+        text_area.send_keys(text_args)
+        text_area.send_keys(Keys.ENTER)
 
     def process_text(self, text: str) -> None:
         """
