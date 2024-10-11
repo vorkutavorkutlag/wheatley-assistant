@@ -124,7 +124,10 @@ class commandhandler:
         :return: None
         """
         isaac_path: str = r"C:\Program Files (x86)\Steam\steamapps\common\The Binding of Isaac Rebirth\isaac-ng.exe"
-        os.startfile(isaac_path)
+        try:
+            os.startfile(isaac_path)
+        except FileNotFoundError:
+            return
 
     def shut_up(self) -> None:
         """

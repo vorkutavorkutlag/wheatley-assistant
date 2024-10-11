@@ -28,3 +28,30 @@
               ⠀⠀⠀⠀⠀⠉⠉⠉⠛⠻⢛⣿⣶⣶⡽⢤⡄⢛⢃⣒⢠⣿⣿⠟⠀⠀⠀⠀
               ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠁⠀⠁⠀⠀⠀⠀⠀
 </pre>
+
+## Summary
+Using selenium, the application connects to [character.ai](https://www.character.ai) and launches the desired chat 
+(in this case, being Wheatley's, though I plan on making a more customizable version for this project eventually). 
+It calls the character, and that's how you have conversation. This uses KoljaB's RealTimeSST to capture the user's sentences
+and run appropriate pre-written commands associated with them.
+
+# Setting up
+1. [Clone the repository](https://github.com/vorkutavorkutlag/wheatley-assistant.git)
+2. [Download Firefox](https://www.mozilla.org/en-US/firefox/new/)
+3. [Get the cookie.txt extension](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
+4. Open [character.ai](https://www.character.ai) and log in. Click the extensions icone -> cookie.txt -> current site. This will download a cookie.txt file.
+5. Drag the file to the `config` folder of the cloned repository.
+6. Run main.py
+
+## Commands 
+The application contains a set of prewritten voice commands in `voice_commands.py`
+They include and are limited to:
+1. Terminate Application -> Closes the application, and by extension its browsers.
+2. On YouTube Play [text] -> Searches up [text] on youtube and plays the first result.
+3. Let's Play A Random Game -> Launches random game from your steam library.
+4. Let's Play Isaac -> Launches The Binding Of Isaac, if you have it ;3
+5. Shut Up -> Interrupts the character, if they are currently talking, allowing you to speak.
+6. Please Google [Text] -> Opens up google and googles [text]
+7. Terminate Google -> Closes down the web browser (same one as YouTube!)
+
+More to come...

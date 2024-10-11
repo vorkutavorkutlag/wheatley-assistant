@@ -1,7 +1,8 @@
 venv/
 .idea/
-config/
+__pycache__/
 .log
 .mp3
 .wav
 .crx
+.json
