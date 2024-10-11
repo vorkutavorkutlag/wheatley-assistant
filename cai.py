@@ -21,14 +21,15 @@ class Cai:
         self.my_name = my_name
         self.character_name: str = char_name
         self.prompt_message: str = f"### [START_CONTEXT: You, {self.character_name}, " \
-                                   f"are able to communicate with me on my computer, as if you were uploaded here. " \
+                                   f"are able to communicate with me through my computer" \
                                    f"You are like a desktop companion on my," \
                                    f" {self.my_name}'s computer. Your purposes: " \
                                    f"help me with information, keep me company, and complete tasks. " \
-                                    "The following is a list of available commands that are completed when" \
-                                    "the user asks for it: {Play music, Launch game, Google something}... " \
-                                   "Keep true to your personality in Portal 2, be curious and rude.] ###" \
-                                   "        Hello! Pleased to meet you"
+                                   "The following is a list of available commands that are completed when" \
+                                   "the user asks for it: {Play music, Launch game, Google something}... " \
+                                   "Keep true to your personality in Portal 2, be curious, rude, moronic. " \
+                                   "Do not RP in asteriks! Only speech.] ###" \
+                                   "        Hello!"
 
         # Initialize driver
         options = self.get_options(visible=False)
@@ -44,7 +45,7 @@ class Cai:
             with open(cookie_cache_path, 'w') as file:
                 json.dump([], file, indent=4)
 
-        cookies_txt_path: str = os.path.join(ROOT_DIR, "config", "config.txt")
+        cookies_txt_path: str = os.path.join(ROOT_DIR, "config", "cookie.txt")
         if os.path.exists(cookies_txt_path):
             self.netscape_convertor(cookies_txt_path, cookie_cache_path)
             os.remove(cookies_txt_path)
@@ -61,7 +62,7 @@ class Cai:
     @staticmethod
     def netscape_convertor(file_path: str, cookie_cache_path: str) -> None:
         """
-        Converts the .txt file given by the config.txt Firefox extension to the standard Netscape form.
+        Converts the .txt file given by the cookie.txt Firefox extension to the standard Netscape form.
 
         :param cookie_cache_path: Path to the cookie cache. Usually config/driver_cookies.json
         :param file_path: Path to the cookie.txt file downloaded from the Firefox extension
@@ -207,11 +208,13 @@ class Cai:
         """
         :return: True if webdriver is making audio, false otherwise
         """
-        # javascript code that returns if audio is playing
-        script: str = "return Array.from(document.querySelectorAll('audio, video')).some("\
-            "media => !media.paused && !media.muted && media.readyState >= 2);"
-        is_audio_playing = self.driver.execute_script(script)
-        return is_audio_playing
+        try:
+            # If we can find the interrupt button, it means character is speaking.
+            interrupt_button_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div[2]/div/div[2]/button"
+            button = self.driver.find_element(By.XPATH, interrupt_button_xpath)
+            return button.is_displayed()
+        except selenium.common.exceptions.NoSuchElementException:
+            return False
 
     def run(self):
         cai_website: str = "https://character.ai/"

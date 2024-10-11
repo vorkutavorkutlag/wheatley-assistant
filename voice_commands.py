@@ -1,5 +1,3 @@
-import threading
-
 import selenium.common.exceptions
 from RealtimeSTT import AudioToTextRecorder   # Thanks, KoljaB!
 from selenium import webdriver
@@ -35,13 +33,13 @@ class commandhandler:
             spaced_attr: str = attr.replace("_", " ")
             self.commands[spaced_attr] = getattr(self, attr)
 
-    def kill_application(self) -> None:
+    def terminate_application(self) -> None:
         """
         Closes webdriver (CAI connection), driver, and shuts program down
         :return: None
         """
         try:
-            self.kill_google()
+            self.terminate_google()
         finally:
             try:
                 self.cai_reference.driver.quit()
@@ -72,7 +70,12 @@ class commandhandler:
     #     :return: None
     #     """
     #     mixer.music.pause()
-    def init_webdriver(self):
+
+    def init_webdriver(self) -> None:
+        """
+        Loads extensions and creates webdriver
+        :return:
+        """
         extensions_path: str = os.path.join(ROOT_DIR, "extensions")
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['--headless'])
@@ -80,7 +83,7 @@ class commandhandler:
             extension_abspath: str = os.path.join(extensions_path, extension)
             options.add_extension(extension_abspath)
 
-        self.driver = webdriver.Chrome(chrome_options=options)
+        self.driver = webdriver.Chrome(options=options)
 
     def on_youtube_play(self, text_args: str):
         if self.driver is None:
@@ -107,7 +110,7 @@ class commandhandler:
                 return
             chosen_game_fp: str = os.path.join(steam_path, random.choice(os.listdir(steam_path)))
             for file in os.listdir(chosen_game_fp):
-                if file.endswith(".exe"):
+                if file.endswith(".exe") and not file.startswith("Unity"):
                     abs_file_path = os.path.join(steam_path, chosen_game_fp, file)
                     os.startfile(abs_file_path)
                     return
@@ -134,7 +137,7 @@ class commandhandler:
             # Meaning it did not find the interruption button - meaning character was not speaking
             return
 
-    def kill_google(self) -> None:
+    def terminate_google(self) -> None:
         """
         Closes the temporary webdriver
         :return: None
@@ -186,7 +189,7 @@ class commandhandler:
         Runs STT indefinitely, constantly inputs user's voice
         :return: None
         """
-        print("Wait until it says 'speak now'")
+        print("Wait until you can see character")
         recorder = AudioToTextRecorder()
 
         while True:

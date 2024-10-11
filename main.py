@@ -1,5 +1,6 @@
 import cai
 import voice_commands
+import desktop_presence
 from threading import Thread
 from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 
@@ -22,13 +23,14 @@ def main():
 
     cai_thread: Thread = Thread(target=web_manager.run)
     vc_thread: Thread = Thread(target=voice_command_manager.run)
-    threads: list[Thread] = [cai_thread, vc_thread]
+    dp_thread: Thread = Thread(target=desktop_presence.run, args=(web_manager,))
+    threads: list[Thread] = [cai_thread, vc_thread, dp_thread]
     for thread in threads:
         thread.start()
 
     try:
         turn_volume_down()
-    except:
+    except Exception:
         # Most likely because user uses Linux
         pass
 
