@@ -60,3 +60,4 @@ More to come...
 1. Start speaking only if you either see the character, hear a beep sound, or see your microphone being used by the app. It will not receive any speech prior to that.
 2. The character doesn't hear you whenever they are talking, you have to interrupt them first (say `Shut Up`)
 3. In order to reset the memory of the bot, delete the `BIRTH` file in the `config` folder. This will make it create a new chat next time it's launched (It takes a bit to create a new chat, so beware!) If you wish to return to a previous chat/memory set, make sure you have a `BIRTH` file (they are empty, 0B), go to character.ai, and select the chat you want to continue in. Next time you launch the application it will automatically continue in that chat.
+4. In order to add extensions, such as adblock, drag and drop the `.crx` file of the extension to the `extensions` folder.
