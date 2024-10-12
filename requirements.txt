@@ -1,6 +1,5 @@
 Pillow==10.4.0
 pycaw==20240210
-pygame==2.5.2
 RealtimeSTT==0.3.0
 RealtimeSTT==0.3.0
 selenium==4.25.0

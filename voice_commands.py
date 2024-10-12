@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from pygame import mixer
 import os
 import random
 from cai import Cai
@@ -20,8 +19,6 @@ class commandhandler:
         """
         Dynamically creates a phrase<->function dictionary
         """
-        mixer.init()
-        mixer.music.set_volume(0.2)
 
         self.commands: dict[str, callable] = {}
         self.cai_reference: Cai = cai_reference
@@ -46,30 +43,6 @@ class commandhandler:
                 os._exit(0)
             except (BrokenPipeError, ):
                 return
-
-    # @staticmethod
-    # def play_music() -> None:
-    #     """
-    #     Randomly chooses a song/audio to play from the music folder
-    #     :return: None
-    #     """
-    #     # In case something is already playing, stop it and choose another
-    #     if mixer.Channel(0).get_busy():
-    #         mixer.stop()
-    #     path_to_music_folder: str = os.path.join(ROOT_DIR, "music")
-    #     audio_file: str = random.choice(os.listdir(path_to_music_folder))
-    #     audio_file_path: str = os.path.join(ROOT_DIR, "music", audio_file)
-    #     mixer.music.load(audio_file_path)
-    #     mixer.music.play()
-    #     return
-    #
-    # @staticmethod
-    # def pause_music() -> None:
-    #     """
-    #     Stops whatever song/audio is playing
-    #     :return: None
-    #     """
-    #     mixer.music.pause()
 
     def init_webdriver(self) -> None:
         """
