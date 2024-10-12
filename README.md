@@ -37,11 +37,12 @@ and run appropriate pre-written commands associated with them.
 
 # Setting up
 1. [Clone the repository](https://github.com/vorkutavorkutlag/wheatley-assistant.git)
-2. [Download Firefox](https://www.mozilla.org/en-US/firefox/new/)
-3. [Get the cookie.txt extension](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
-4. Open [character.ai](https://www.character.ai) and log in. Click the extensions icone -> cookie.txt -> current site. This will download a cookie.txt file.
-5. Drag the file to the `config` folder of the cloned repository.
-6. Run main.py
+2. [Install Python](https://www.python.org/downloads/) if needed, then run `{path to python executable} pip install requirements.txt` inside the folder of the cloned repoistory.
+3. [Download Firefox](https://www.mozilla.org/en-US/firefox/new/)
+4. [Get the cookie.txt extension](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/)
+5. Open [character.ai](https://www.character.ai) and log in. Click the extensions icone -> cookie.txt -> current site. This will download a cookie.txt file.
+6. Drag the file to the `config` folder of the cloned repository.
+7. Run main.py
 
 ## Commands 
 The application contains a set of prewritten voice commands in `voice_commands.py`
