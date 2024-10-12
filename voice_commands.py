@@ -91,10 +91,16 @@ class commandhandler:
 
         search_query: str = 'https://www.youtube.com/results?search_query={}'.format(text_args)
         self.driver.get(search_query)
-
-        WebDriverWait(self.driver, QUICK_WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "video-title")))
-        self.driver.find_element(By.ID, "video-title").click()
-
+        while True:
+            # KEEP CLOSING EXTENSION POP UPS UNTIL WE RETURN TO VIDEO.
+            try:
+                WebDriverWait(self.driver, QUICK_WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "video-title")))
+                self.driver.find_element(By.ID, "video-title").click()
+            except selenium.common.exceptions.TimeoutException:
+                try:
+                    self.driver.close()
+                except AttributeError:
+                    return
 
     @staticmethod
     def lets_play_a_random_game() -> None:
@@ -128,6 +134,19 @@ class commandhandler:
             os.startfile(isaac_path)
         except FileNotFoundError:
             return
+
+    @staticmethod
+    def lets_play_hearts_of_iron() -> None:
+        """
+        Okay, this is more for personal use. Change this function / the following with games applicable for you
+        :return: None
+        """
+        hoi4_path: str = r"C:\Program Files (x86)\Steam\steamapps\common\Hearts of Iron IV\hoi4.exe"
+        try:
+            os.startfile(hoi4_path)
+        except FileNotFoundError:
+            return
+
 
     def shut_up(self) -> None:
         """
