@@ -14,10 +14,15 @@ def turn_volume_down() -> None:
     for session in sessions:
         volume = session._ctl.QueryInterface(ISimpleAudioVolume)
         if session.Process and session.Process.name() == "firefox.exe":
-            volume.SetMasterVolume(0.4, None)
+            volume.SetMasterVolume(0.2, None)
 
 
 def main():
+    """
+    The main function for Wheatley Assistant.
+    Creates several threads for each component of the application and runs them.
+    :return: None
+    """
     web_manager: cai.Cai = cai.Cai()
     voice_command_manager: voice_commands.commandhandler = voice_commands.commandhandler(web_manager)
 
@@ -31,7 +36,7 @@ def main():
     try:
         turn_volume_down()
     except Exception:
-        # Most likely because user uses Linux
+        # Most likely because user does not use Windows
         pass
 
     for thread in threads:

@@ -69,21 +69,15 @@ class DesktopPet:
         """
         self.root = root
         self.cai = cai
-        self.root.title("Desktop Pet")
-        self.root.geometry("300x300")  # Adjusted size for better visibility
+        self.root.title("Wheatley")
+        self.root.geometry("300x300")
         self.root.resizable(False, False)
-
-        # Remove window decorations (optional)
         self.root.overrideredirect(True)
-
-        # Set window to stay on top
         self.root.attributes("-topmost", True)
 
-        # Initialize mode
         self.mode = "loading"
-        self.loading_complete = False  # Flag to indicate if loading is done
+        self.loading_complete = False
 
-        # Create a label to display the GIF
         self.label = tk.Label(root, bg="white")
         self.label.pack(expand=True, fill="both")
 
@@ -96,7 +90,6 @@ class DesktopPet:
             "talking": AnimatedGIF(self.label, os.path.join(gif_folder, "talking.gif"), delay=delay)
         }
 
-        # Start the loading sequence
         self.start_loading()
 
         # Handle window dragging
@@ -160,7 +153,7 @@ class DesktopPet:
                 self.mode = "talking"
                 self.update_pet()
         else:
-            # After loading, switch between idle and talking
+            # Switch between idle and talking
             if self.cai.is_making_sound():
                 if self.mode != "talking":
                     self.switch_to_talking()
@@ -168,12 +161,11 @@ class DesktopPet:
                 if self.mode != "idle":
                     self.switch_to_idle()
 
-        # Schedule the next poll
-        self.root.after(500, self.poll_cai_state)  # Poll every 500ms
+        # Schedule the next poll (Every 500ms)
+        self.root.after(500, self.poll_cai_state)
 
 
 def run(cai: Cai):
-    # Initialize tkinter root
     root = tk.Tk()
 
     DesktopPet(root, cai)
