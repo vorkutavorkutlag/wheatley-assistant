@@ -151,6 +151,7 @@ class Cai:
     def initialize_chat(self) -> None:
         """
         Finds the textarea and sends the prompt message.
+        At times the textarea changes to a different xpath, so we try both.
         :return: None.
         """
         text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/div/div[1]/textarea"
@@ -162,7 +163,8 @@ class Cai:
 
     def get_new_chat(self) -> None:
         """
-        Opens options, locates new chat button, clicks. Website automatically changes into new chat
+        Opens options, locates new chat button, clicks. Website automatically changes into new chat.
+        At times the settings button changes to a different xpath, so we try both.
         :return: None
         """
         triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[1]/div[2]/div/button"
