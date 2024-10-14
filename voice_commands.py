@@ -1,5 +1,6 @@
 import selenium.common.exceptions
 from RealtimeSTT import AudioToTextRecorder   # Thanks, KoljaB!
+from difflib import get_close_matches
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -76,50 +77,67 @@ class commandhandler:
                     return
 
     @staticmethod
-    def lets_play_a_random_game() -> None:
+    def assert_steam(steam_path: str):
+        try:
+            games_list: list[str] = os.listdir(steam_path)
+            return games_list
+        except NotADirectoryError:
+            return
+
+    def lets_play_a_random_game(self) -> None:
         """
         Made for Windows, randomly launches a game from steam.
         :return: None
         """
 
         steam_path: str = r"C:\Program Files (x86)\Steam\steamapps\common"
+        games_list = self.assert_steam(steam_path=steam_path)
+        try:
+            assert games_list != []
+        except AssertionError:
+            return
+
         tries: int = 0
         while True:
+            tries += 1
             if tries >= 10:
                 return
+
             chosen_game_fp: str = os.path.join(steam_path, random.choice(os.listdir(steam_path)))
-            for file in os.listdir(chosen_game_fp):
-                if file.endswith(".exe") and not file.startswith("Unity"):
-                    abs_file_path = os.path.join(steam_path, chosen_game_fp, file)
-                    os.startfile(abs_file_path)
-                    return
-            tries += 1
+            try:
+                chosen_game_executable = next(file for file in os.listdir(chosen_game_fp) if file.endswith(".exe") and not file.startswith("UnityCrash"))
+                chosen_game_executable = os.path.join(steam_path, chosen_game_fp, chosen_game_executable)
+                os.startfile(chosen_game_executable)
+                return
+            except StopIteration:
+                continue
 
 
-    @staticmethod
-    def lets_play_isaac() -> None:
+
+    def lets_play_the_game(self, text_args: str):
         """
-        Okay, this is more for personal use. Change this function / the following with games applicable for you
-        :return: None
+        Tries to find the steam folder with the closest name to request, launches first .exe
+        :param text_args:
+        :return: None. Launches game
         """
-        isaac_path: str = r"C:\Program Files (x86)\Steam\steamapps\common\The Binding of Isaac Rebirth\isaac-ng.exe"
+
+        steam_path: str = r"C:\Program Files (x86)\Steam\steamapps\common"
+        games_list = self.assert_steam(steam_path=steam_path)
         try:
-            os.startfile(isaac_path)
-        except FileNotFoundError:
+            assert games_list != []
+        except AssertionError:
             return
 
-    @staticmethod
-    def lets_play_hearts_of_iron() -> None:
-        """
-        Okay, this is more for personal use. Change this function / the following with games applicable for you
-        :return: None
-        """
-        hoi4_path: str = r"C:\Program Files (x86)\Steam\steamapps\common\Hearts of Iron IV\hoi4.exe"
-        try:
-            os.startfile(hoi4_path)
-        except FileNotFoundError:
-            return
+        closest_match: str = get_close_matches(text_args, games_list)[0]
+        closest_match = os.path.join(steam_path, closest_match)
 
+        try:
+            closest_match_executable: str = next(file for file in os.listdir(closest_match)
+                                     if file.endswith(".exe") and not file.startswith("UnityCrash"))
+            closest_match_executable = os.path.join(steam_path, closest_match, closest_match_executable)
+            os.startfile(closest_match_executable)
+        except StopIteration:
+            return
 
     def shut_up(self) -> None:
         """
@@ -190,7 +208,3 @@ class commandhandler:
         while True:
             recorder.text(self.process_text)
 
-
-if __name__ == "__main__":
-    ch = commandhandler()
-    ch.run()
