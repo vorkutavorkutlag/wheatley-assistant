@@ -50,7 +50,7 @@ They include and are limited to:
 1. Terminate Application -> Closes the application, and by extension its browsers.
 2. On YouTube Play [text] -> Searches up [text] on youtube and plays the first result.
 3. Let's Play A Random Game -> Launches random game from your steam library.
-4. Let's Play Isaac -> Launches The Binding Of Isaac, if you have it ;3
+4. Let's Play [Game Name] -> Finds closest match for requested game in steam library and launches it.
 5. Shut Up -> Interrupts the character, if they are currently talking, allowing you to speak.
 6. Please Google [Text] -> Opens up google and googles [text]
 7. Terminate Google -> Closes down the web browser (same one as YouTube!)
