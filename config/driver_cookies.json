@@ -1,0 +1,119 @@
+[
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1767104360,
+        "name": "AMP_39bbdcaee6",
+        "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIzODUxNmM4Zi1hOTYwLTQwMDctYmZlOC1iOTQ4N2RmZjZhOTglMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjIzOTkyODA5MjElMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzM1NTY3NzA3OTcwJTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTczNTU2ODM2MDAxOSUyQyUyMmxhc3RFdmVudElkJTIyJTNBODglMkMlMjJwYWdlQ291bnRlciUyMiUzQTUlN0Q="
+    },
+    {
+        "domain": "character.ai",
+        "httpOnly": false,
+        "path": "/",
+        "secure": false,
+        "expiry": 1765378983,
+        "name": "cookie_consent_v1",
+        "value": "not_applicable"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1765378983,
+        "name": "AMP_MKTG_39bbdcaee6",
+        "value": "JTdCJTdE"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1741618985,
+        "name": "_gcl_au",
+        "value": "1.1.883166554.1733842985"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1770128359,
+        "name": "afUserId",
+        "value": "a967e5c0-cb7a-4c1f-81a3-e585396a5f1f-p"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1770128358,
+        "name": "AF_MEASUREMENT_STATUS",
+        "value": "true"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1768403010,
+        "name": "web-next-auth",
+        "value": "Fe26.2*1*2932355351dfc6fc3bf38232685badc27bf29d5de2c3e6d5036022f1a6ad4a22*FS_cYRvIPtIXi7NIbj9z7Q*EURWT9uDYrxhCzNSUUVC12YeLtKYgImtFQrdj7Sr9QraT_pQwSl0Rg3OaupYnQ682IMsG2Rb99rIQFXKzSzHBQ**cd7efcedee2a8a3d17124ed94f1bb8bdab77f6f73a189f5143e2b18b4d7433d0*3cRq7OWCNn7RTugZve7toHGE0XhX0jWS9trrB2EA4ow~2"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": true,
+        "expiry": 1765382197,
+        "name": "cf_clearance",
+        "value": "GguRCWI1udN0x.nmVNddclh04HKu.CAmeCZ3vVbyZ58-1733846225-1.2.1.1-PBXdKUNJwrAdkr3nXP4ySr6HgHXIzXZPfa4HzsSwjvlnuS8VHT.nAtZhIZ7fTNXn8fzRnl8TMq6IFs6.urIAwljxopp4uT_2CZeL4l6sYSRKR86axAEhYaAU_mrBzGLArmrKw..L8FerSCTOgZz2ZkZtqybDvspWxlA.EHwZLbWF17dH997Rbcf27b.Qxws4LJpXopHRKMGWXY4HJNIoN3wh5XkC7slj3UCP23xE5xtK.Hz_v6U5r.rnU4orVYYWRj9mYqURDy3e8aMwmxRORSn9D9ONO9n0iPeyGd6AjeUyB4LSi3rn92Z5lIEIrLtuBCNsbssWUpqy8QDTU9cgHdhNLMseWhY2.uKVD1sq5mU"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": true,
+        "expiry": 1735569507,
+        "name": "__cf_bm",
+        "value": "pf_nMZSH3d9n_LgnPhaCzPw7uBKTl4Ou9eDrJO3iKjQ-1735567717-1.0.1.1-fMuaYYcgE8pAV3MoxYE62kQtc_UTXpoq9XHshYq.TWNlC40njrTqbzg.xGKY5tlnv6Ey_F8jdi9aEIwQnoefpA"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": false,
+        "expiry": 1736172511,
+        "name": "AF_SYNC",
+        "value": "1735567711725"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": true,
+        "expiry": 1735569255,
+        "name": "__cfwaitingroom_cai",
+        "value": "ChhYY0kzMjBIZTRoMGR0NlMyMDVVWWl3PT0SjAJpWHB5V2NjVXdpK2xDMHptTDRyeDVLbisyQXRtZnphVU0rWkd6UTd6ekR6NktpUHV0N1dQKzBnSk40b1ovTDRySjFBME5vd093QnZsRGRsWllEZXU1UmRwTkZFdU56cm1SaEFFUEFEdCszN2FSaGRRTjZKOGxFOHBNTmdyemErc3dlWlEyckp2bVRrTTl1Nm9WSXE2VFFaVktmUXVYVzhDUFl1Q2VlQkRIZnBDZWFrWE10WXhlMHp4TktzV2JmN2xuY3hpWUJKZkJHRWpsaUJlY3BLc0JyeWtqSm1KUGZ2cGZNMk1hSldZRldDUmJtS1lTdkhvTGRmM28zTEtVeWtFWFYzeGNRYlRQQT09"
+    },
+    {
+        "domain": ".character.ai",
+        "httpOnly": true,
+        "path": "/",
+        "secure": true,
+        "expiry": 1735568666,
+        "name": "edge_rollout",
+        "value": "10"
+    },
+    {
+        "domain": "character.ai",
+        "httpOnly": false,
+        "path": "/",
+        "secure": false,
+        "expiry": 0,
+        "name": "appsflyer_first_invocation",
+        "value": "true"
+    }
+]

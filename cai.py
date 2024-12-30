@@ -42,16 +42,17 @@ class Cai:
         os.makedirs(config_folder_path, exist_ok=True)
 
         if not os.path.exists(cookie_cache_path):
-            with open(cookie_cache_path, 'w') as file:
+            with open(cookie_cache_path, 'w+') as file:
                 json.dump([], file, indent=4)
 
-        cookies_txt_path: str = os.path.join(ROOT_DIR, "config", "cookie.txt")
+        cookies_txt_path: str = os.path.join(ROOT_DIR, "config", "cookies.txt")
         if os.path.exists(cookies_txt_path):
             self.netscape_convertor(cookies_txt_path, cookie_cache_path)
+            print(f"Removing {cookies_txt_path}....")
             os.remove(cookies_txt_path)
 
     @staticmethod
-    def get_options(visible: bool = False, disable_perm: bool = True, fake_streams: bool = False) -> Options:
+    def get_options(visible: bool, disable_perm: bool = True, fake_streams: bool = False) -> Options:
         options = Options()
         options.set_preference("media.navigator.permission.disabled", disable_perm)
         options.set_preference("media.navigator.streams.fake", fake_streams)
@@ -101,6 +102,7 @@ class Cai:
 
         # Write to the json file
         with open(cookie_cache_path, 'r+') as file:
+            print(added_cookies)
             existing_cookies: list[dict] = json.load(file)
             existing_cookies.extend(added_cookies)
             file.seek(0)
@@ -120,9 +122,9 @@ class Cai:
         :param xpath: xpath to the element we want to be clicked
         :return: None
         """
-        call_button: EC.element_to_be_clickable = WebDriverWait(self.driver, wait_time).until(
+        button: EC.element_to_be_clickable = WebDriverWait(self.driver, wait_time).until(
             EC.element_to_be_clickable((By.XPATH, xpath)))
-        call_button.click()
+        button.click()
 
     def write_by_xpath(self, xpath: str, text: str, wait_time: int = DEFAULT_WAIT_TIME) -> None:
         """
@@ -154,11 +156,11 @@ class Cai:
         At times the textarea changes to a different xpath, so we try both.
         :return: None.
         """
-        text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/div/div[1]/textarea"
+        text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div[1]/div[2]/div/div[2]/div/div/div/div[1]/textarea"
         try:
             self.write_by_xpath(text_area_xpath, self.prompt_message, wait_time=QUICK_WAIT_TIME)
         except selenium.common.exceptions.TimeoutException:
-            text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[3]/div/div/div/div[1]/textarea"
+            text_area_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div[1]/div[2]/div/div[2]/div/div/div/div[1]"
             self.write_by_xpath(text_area_xpath, self.prompt_message, wait_time=QUICK_WAIT_TIME)
 
     def get_new_chat(self) -> None:
@@ -167,14 +169,11 @@ class Cai:
         At times the settings button changes to a different xpath, so we try both.
         :return: None
         """
-        triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[1]/div[2]/div/button"
         new_chat_button_xpath: str = "/html/body/div[3]/div[4]/button[1]"
         try:
-            self.click_by_xpath(triple_dot_xpath, wait_time=QUICK_WAIT_TIME)
+            self.click_by_xpath(new_chat_button_xpath, wait_time=QUICK_WAIT_TIME)
         except selenium.common.exceptions.TimeoutException:
-            triple_dot_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[1]/div[2]/div/button"
-            self.click_by_xpath(triple_dot_xpath, wait_time=QUICK_WAIT_TIME)
-        self.click_by_xpath(new_chat_button_xpath)
+            pass
 
     def switch_voice(self, voice_num: int) -> None:
         """
@@ -221,8 +220,8 @@ class Cai:
     def run(self):
         cai_website: str = "https://character.ai/"
         cai_character: str = "https://character.ai/chat/l7714PjXVoRSsP6l2WYIPHkLKX3KQVbdA6ulZ5oS__M"
-        call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div[3]/div/div/button"
-
+        call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div[1]/div[2]/div/div[2]/div/div/button/svg/path"
+        ignore_xpath: str = "/html/body/div[4]/button"
 
         # Load cookies and reload into character's chat
         self.driver.get(cai_website)
@@ -244,7 +243,7 @@ class Cai:
         try:
             self.click_by_xpath(xpath=call_xpath, wait_time=QUICK_WAIT_TIME)
         except selenium.common.exceptions.TimeoutException:
-            call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div/div/div[3]/div/div/button"
+            call_xpath: str = "/html/body/div[1]/div/main/div/div/div/main/div/div[1]/div[2]/div/div[2]/div/div/button"
             self.click_by_xpath(xpath=call_xpath, wait_time=QUICK_WAIT_TIME)
 
 
