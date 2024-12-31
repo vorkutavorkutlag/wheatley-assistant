@@ -1,0 +1,5 @@
+config/BIRTH
+config/driver_cookies.json
+config/cookies.txt
+extensions/*
+*.log
